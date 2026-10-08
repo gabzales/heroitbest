@@ -41,8 +41,29 @@ export default function LoginForm({ next = "/dashboard" }: { next?: string }) {
         setLoading(false);
         return;
       }
-      router.push(next);
-      router.refresh();
+      // Pastikan baris profil di public.users ada. Kalau tidak ada,
+      // dashboard akan melempar balik ke /login (kelihatan seperti "login
+      // gagal" padahal password benar) -- jadi kasih pesan yang jelas.
+      const { data: sess } = await supabase.auth.getUser();
+      if (!sess.user) {
+        setError("Login berhasil tapi sesi tidak tersimpan. Cek NEXT_PUBLIC_SUPABASE_URL / ANON_KEY di Vercel (harus project yang sama), lalu redeploy.");
+        setLoading(false);
+        return;
+      }
+      const { data: profile, error: profileError } = await supabase
+        .from("users")
+        .select("id, role")
+        .eq("id", sess.user.id)
+        .maybeSingle();
+      if (profileError || !profile) {
+        await supabase.auth.signOut();
+        setError("Akun ada di Auth tapi profilnya belum ada di tabel users. Jalankan supabase/setup.sql penuh, lalu buat admin lewat /setup-admin.");
+        setLoading(false);
+        return;
+      }
+      // Full navigation (bukan router.push) supaya cookie sesi pasti ikut
+      // terkirim ke middleware pada request berikutnya.
+      window.location.assign(next === "/dashboard" && profile.role === "admin" ? "/dashboard/admin" : next);
     } catch {
       setError("Gagal login. Coba lagi.");
       setLoading(false);
