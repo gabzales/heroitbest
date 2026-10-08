@@ -61,6 +61,7 @@ export default function PartnerApiDocsPage() {
           ["#ikhtisar", "Ikhtisar"],
           ["#auth", "Autentikasi"],
           ["#products", "GET /products"],
+          ["#balance", "GET /balance"],
           ["#generate-key", "POST /generate-key"],
           ["#errors", "Kode error"],
           ["#alur", "Alur integrasi"],
@@ -128,6 +129,16 @@ Content-Type: application/json`}</Code>
     }
   ]
 }`}</Code>
+
+      <H2 id="balance">
+        <Pill tone="get">GET</Pill> <span className="font-mono text-[17px]">/balance</span>
+      </H2>
+      <p className="text-[14px] leading-relaxed text-ink-dim">
+        Sisa saldo akun reseller yang terikat ke API key kamu. Pakai untuk menampilkan saldo di panel admin tokomu dan top up sebelum habis.
+      </p>
+      <Code label="Request">{`curl ${BASE}/balance \\
+  -H "X-API-Key: gs_partner_xxx"`}</Code>
+      <Code label="Response 200">{`{ "balance": 250000, "currency": "IDR", "label": "Nama key" }`}</Code>
 
       <H2 id="generate-key">
         <Pill tone="post">POST</Pill> <span className="font-mono text-[17px]">/generate-key</span>
