@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createHash, timingSafeEqual } from "crypto";
 import { createClient } from "@supabase/supabase-js";
 import { checkRateLimit } from "@/lib/rate-limit";
+import { verifyTurnstile } from "@/lib/turnstile";
 
 /**
  * Setup admin PERTAMA lewat browser: buka /setup-admin, isi kode rahasia
@@ -53,6 +54,9 @@ export async function POST(request: Request) {
   const password = typeof body?.password === "string" ? body.password : "";
   const name = typeof body?.name === "string" && body.name.trim() ? body.name.trim().slice(0, 80) : "Admin";
 
+  if (!(await verifyTurnstile(body?.captchaToken, ip))) {
+    return NextResponse.json({ error: "captcha_failed", message: "Verifikasi keamanan gagal. Muat ulang halaman lalu coba lagi." }, { status: 400, headers: noStore });
+  }
   if (!secret || !safeEq(secret, setupSecret)) {
     return NextResponse.json({ error: "unauthorized", message: "Kode rahasia salah." }, { status: 401, headers: noStore });
   }

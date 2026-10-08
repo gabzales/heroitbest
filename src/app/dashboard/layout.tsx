@@ -2,7 +2,8 @@ import { redirect } from "next/navigation";
 import Sidebar from "@/components/dashboard/Sidebar";
 import BottomNav from "@/components/dashboard/BottomNav";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { getCurrentUser } from "@/lib/data/user";
+import { getCurrentUserResult } from "@/lib/data/user";
+import LogoutButton from "@/components/LogoutButton";
 import type { ThemeId } from "@/lib/theme";
 
 export default async function DashboardLayout({
@@ -10,8 +11,24 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const user = await getCurrentUser();
-  if (!user) redirect("/login");
+  const { user, hasSession, error } = await getCurrentUserResult();
+  if (!user && !hasSession) redirect("/login");
+  if (!user) {
+    // Login sukses tapi profil tidak terbaca. Jangan lempar ke /login
+    // (bikin loop membingungkan) -- tampilkan penyebab sebenarnya.
+    return (
+      <div className="mx-auto flex min-h-dvh max-w-[520px] flex-col justify-center gap-4 px-5">
+        <h1 className="font-display text-xl font-bold">Akun belum siap dipakai</h1>
+        <p className="text-sm text-ink-dim">
+          Kamu sudah login, tapi data profil di database tidak bisa dibaca. Biasanya karena
+          <code className="mx-1">supabase/setup.sql</code> belum dijalankan penuh, atau akun ini dibuat di
+          project Supabase yang berbeda dari env di Vercel.
+        </p>
+        <pre className="whitespace-pre-wrap rounded-xl border border-border bg-surface-2 p-3 text-xs">{error}</pre>
+        <LogoutButton className="rounded-xl border border-border px-4 py-2.5 text-sm font-semibold" />
+      </div>
+    );
+  }
 
   return (
     // Nested ThemeProvider, seeded from this account's saved theme

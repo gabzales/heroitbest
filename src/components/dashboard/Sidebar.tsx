@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { Loader2 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { NAV_ITEMS, ADMIN_NAV_ITEM } from "@/lib/nav";
 import Avatar from "@/components/Avatar";
@@ -9,6 +11,19 @@ import { ResellerUser } from "@/lib/types";
 
 export default function Sidebar({ user }: { user: ResellerUser }) {
   const pathname = usePathname();
+  // Highlight pindah SEKETIKA saat diklik (optimistic), tidak nunggu halaman siap.
+  const [pending, setPending] = useState<string | null>(null);
+  useEffect(() => setPending(null), [pathname]);
+  useEffect(() => {
+    if (!pending) return;
+    const t = window.setTimeout(() => setPending(null), 10000);
+    return () => window.clearTimeout(t);
+  }, [pending]);
+  const shown = pending ?? pathname;
+  const onNavClick = (e: React.MouseEvent, href: string) => {
+    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    if (href !== pathname) setPending(href);
+  };
   const items = user.role === "admin" ? [...NAV_ITEMS, ADMIN_NAV_ITEM] : NAV_ITEMS;
 
   return (
@@ -27,14 +42,15 @@ export default function Sidebar({ user }: { user: ResellerUser }) {
       <nav className="flex-1 overflow-y-auto px-3 py-5 flex flex-col gap-1">
         {items.map((item) => {
           const active = item.exact
-            ? pathname === item.href
-            : pathname.startsWith(item.href);
+            ? shown === item.href
+            : shown.startsWith(item.href);
           const Icon = item.icon;
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`group flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-[13.5px] font-medium transition-colors ${
+              onClick={(e) => onNavClick(e, item.href)}
+              className={`tap group flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-[13.5px] font-medium transition-colors ${
                 active
                   ? "bg-primary-dim text-primary"
                   : "text-ink-dim hover:bg-surface-2 hover:text-ink"
@@ -42,8 +58,10 @@ export default function Sidebar({ user }: { user: ResellerUser }) {
             >
               <Icon size={18} strokeWidth={2} />
               {item.label}
-              {active && (
-                <span className="ml-auto h-1.5 w-1.5 rounded-full bg-primary" />
+              {pending === item.href ? (
+                <Loader2 size={14} className="ml-auto animate-spin text-primary" />
+              ) : (
+                active && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-primary" />
               )}
             </Link>
           );

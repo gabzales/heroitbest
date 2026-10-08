@@ -3035,3 +3035,12 @@ end $$;
 alter default privileges revoke execute on functions from public;
 alter default privileges in schema public revoke execute on functions from anon, authenticated;
 
+
+-- ── 8. Kunci kolom internal product_durations ───────────────────
+-- anon key itu publik (ada di bundle browser). Sebelumnya anon/authenticated
+-- boleh SELECT semua kolom product_durations, termasuk provider_item_id
+-- (ID varian di provider upstream). Sekarang hanya kolom yang memang tampil
+-- di etalase. Server membaca provider_item_id lewat service_role (tidak terpengaruh).
+revoke select on public.product_durations from anon, authenticated;
+grant select (id, product_id, label, days, price, stock_mode)
+  on public.product_durations to anon, authenticated;

@@ -22,7 +22,7 @@ export async function getAdminUser(): Promise<ResellerUser | null> {
 
   const { data, error } = await supabase
     .from("users")
-    .select("id, full_name, email, avatar_url, balance, role, verified, theme")
+    .select("*")
     .eq("id", user.id)
     .single();
 

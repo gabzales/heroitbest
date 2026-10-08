@@ -64,3 +64,13 @@ domain `heroitbest.com`. Web ini **terpisah** dari toko HeroMarket.
 
 ## API partner
 Dokumentasi di `/docs/api-v1` (server-to-server, `X-API-Key`; kunci diatur di Admin → Partner API).
+
+
+## Cloudflare Turnstile (anti-bot)
+
+1. Buat widget di dash.cloudflare.com -> Turnstile (domain: domain situsmu).
+2. Vercel env: `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (site key, publik) dan `TURNSTILE_SECRET_KEY` (secret, rahasia). Redeploy.
+3. Supabase -> Authentication -> Attack Protection -> aktifkan CAPTCHA -> Turnstile -> tempel secret key yang sama. (Login diverifikasi oleh Supabase.)
+4. `/setup-admin` diverifikasi oleh server lewat `TURNSTILE_SECRET_KEY`.
+
+Urutan penting: isi env + redeploy DULU, baru aktifkan CAPTCHA di Supabase. Kalau CAPTCHA Supabase aktif tapi site key belum diisi, login akan ditolak.

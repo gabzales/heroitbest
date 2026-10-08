@@ -15,33 +15,56 @@ import { ResellerUser } from "@/lib/types";
  * Wrapped in React's `cache()` so the layout and each page can both call
  * this without issuing duplicate Supabase requests per render pass.
  */
-export const getCurrentUser = cache(async (): Promise<ResellerUser | null> => {
-  if (!isSupabaseConfigured) return CURRENT_USER;
+export type CurrentUserResult = {
+  user: ResellerUser | null;
+  /** Ada sesi login valid, tapi baris profil gagal dibaca. */
+  hasSession: boolean;
+  error: string | null;
+};
+
+export const getCurrentUserResult = cache(async (): Promise<CurrentUserResult> => {
+  if (!isSupabaseConfigured) return { user: CURRENT_USER, hasSession: true, error: null };
 
   const supabase = await createServerSupabase();
-  if (!supabase) return CURRENT_USER;
+  if (!supabase) return { user: CURRENT_USER, hasSession: true, error: null };
 
   const {
     data: { user: authUser },
   } = await supabase.auth.getUser();
-  if (!authUser) return null;
+  if (!authUser) return { user: null, hasSession: false, error: null };
 
-  const { data } = await supabase
+  // select("*") (bukan daftar kolom) supaya tetap jalan walau ada kolom
+  // opsional yang belum ada di DB (mis. `theme` kalau setup.sql belum penuh).
+  const { data, error } = await supabase
     .from("users")
-    .select("id, full_name, email, avatar_url, balance, role, verified, theme")
+    .select("*")
     .eq("id", authUser.id)
-    .single();
+    .maybeSingle();
 
-  if (!data) return null;
+  if (error || !data) {
+    return {
+      user: null,
+      hasSession: true,
+      error: error?.message ?? "Baris profil untuk akun ini tidak ada di tabel public.users.",
+    };
+  }
 
   return {
-    id: data.id,
-    name: data.full_name || data.email.split("@")[0],
-    email: data.email,
-    avatarSeed: data.id,
-    balance: data.balance,
-    role: data.role,
-    verified: data.verified,
-    theme: data.theme || "hero",
+    user: {
+      id: data.id,
+      name: data.full_name || String(data.email ?? "").split("@")[0],
+      email: data.email,
+      avatarSeed: data.id,
+      balance: data.balance ?? 0,
+      role: data.role ?? "user",
+      verified: data.verified ?? false,
+      theme: data.theme || "hero",
+    },
+    hasSession: true,
+    error: null,
   };
+});
+
+export const getCurrentUser = cache(async (): Promise<ResellerUser | null> => {
+  return (await getCurrentUserResult()).user;
 });

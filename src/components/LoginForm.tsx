@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Loader2, Eye, EyeOff } from "lucide-react";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { createClient } from "@/lib/supabase/client";
+import TurnstileWidget, { TURNSTILE_SITE_KEY } from "@/components/TurnstileWidget";
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_ADMIN_WHATSAPP_NUMBER;
 const forgotPasswordHref = WHATSAPP_NUMBER
@@ -19,6 +20,8 @@ export default function LoginForm({ next = "/dashboard" }: { next?: string }) {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [captcha, setCaptcha] = useState<string | null>(null);
+  const [captchaReset, setCaptchaReset] = useState(0);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -29,15 +32,28 @@ export default function LoginForm({ next = "/dashboard" }: { next?: string }) {
       return;
     }
 
+    if (TURNSTILE_SITE_KEY && !captcha) {
+      setError("Selesaikan verifikasi keamanan dulu.");
+      return;
+    }
     setLoading(true);
     setError("");
     try {
       const supabase = createClient();
-      const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+        options: captcha ? { captchaToken: captcha } : undefined,
+      });
       if (signInError) {
         // Generic message on purpose -- confirming "email not found" vs
         // "wrong password" tells an attacker which emails have accounts.
-        setError("Email atau password salah.");
+        setError(
+          /captcha/i.test(signInError.message)
+            ? "Verifikasi keamanan gagal. Coba lagi."
+            : "Email atau password salah."
+        );
+        setCaptchaReset((n) => n + 1); // token sekali pakai -> muat ulang widget
         setLoading(false);
         return;
       }
@@ -108,9 +124,11 @@ export default function LoginForm({ next = "/dashboard" }: { next?: string }) {
         </div>
       </label>
 
+      <TurnstileWidget onToken={setCaptcha} resetKey={captchaReset} />
+
       <button
         type="submit"
-        disabled={loading}
+        disabled={loading || (!!TURNSTILE_SITE_KEY && !captcha)}
         className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-5 py-3.5 text-[13.5px] font-bold text-bg transition-transform hover:scale-[1.01] disabled:cursor-wait disabled:opacity-70"
       >
         {loading && <Loader2 size={16} className="animate-spin" />}

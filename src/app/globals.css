@@ -99,3 +99,42 @@ body {
     scroll-behavior: auto !important;
   }
 }
+
+/* ---------- Navigasi cepat & animasi (UX) ---------- */
+.nav-progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 3px;
+  z-index: 9999;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.nav-progress-bar {
+  height: 100%;
+  background: var(--primary);
+  box-shadow: 0 0 8px var(--primary);
+  border-radius: 0 3px 3px 0;
+  transition: width 0.18s ease-out;
+}
+
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
+}
+.page-enter { animation: page-enter 0.28s cubic-bezier(0.22, 1, 0.36, 1) both; }
+
+@keyframes skeleton-shimmer {
+  0%   { background-position: 100% 0; }
+  100% { background-position: 0 0; }
+}
+.skeleton {
+  border-radius: 14px;
+  background: linear-gradient(90deg, var(--surface-2) 25%, var(--border) 40%, var(--surface-2) 55%);
+  background-size: 300% 100%;
+  animation: skeleton-shimmer 1.3s ease-in-out infinite;
+}
+
+/* Efek tekan di tombol/link -> terasa responsif di HP. */
+.tap { transition: transform 0.12s ease, background-color 0.15s ease, color 0.15s ease; }
+.tap:active { transform: scale(0.95); }
+button:not(:disabled):active { transform: scale(0.98); }

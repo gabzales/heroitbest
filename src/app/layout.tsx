@@ -8,6 +8,7 @@ import "@fontsource/inter/600.css";
 import "@fontsource/inter/700.css";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import NavProgress from "@/components/NavProgress";
 import { THEME_STORAGE_KEY, THEMES, DEFAULT_THEME } from "@/lib/theme";
 
 // Runs before paint, straight in <head>, so a saved theme is applied
@@ -52,6 +53,7 @@ export default function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
       <body className="font-body antialiased bg-bg text-ink min-h-dvh">
+        <NavProgress />
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

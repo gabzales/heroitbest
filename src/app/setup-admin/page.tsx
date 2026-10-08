@@ -2,10 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import TurnstileWidget, { TURNSTILE_SITE_KEY } from "@/components/TurnstileWidget";
 
 export default function SetupAdminPage() {
   const [form, setForm] = useState({ secret: "", name: "", email: "", password: "" });
   const [busy, setBusy] = useState(false);
+  const [captcha, setCaptcha] = useState<string | null>(null);
+  const [captchaReset, setCaptchaReset] = useState(0);
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
 
   async function submit(e: React.FormEvent) {
@@ -16,7 +19,7 @@ export default function SetupAdminPage() {
       const res = await fetch("/api/setup-admin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, captchaToken: captcha }),
       });
       const data = await res.json().catch(() => ({}));
       setMsg({ ok: res.ok, text: data.message || (res.ok ? "Berhasil." : "Gagal.") });
@@ -24,6 +27,7 @@ export default function SetupAdminPage() {
     } catch {
       setMsg({ ok: false, text: "Tidak bisa terhubung ke server." });
     } finally {
+      setCaptchaReset((n) => n + 1);
       setBusy(false);
     }
   }
@@ -47,7 +51,8 @@ export default function SetupAdminPage() {
         <input className={input} type="password" placeholder="Password (min. 8 karakter)" minLength={8} required
           autoComplete="new-password" value={form.password}
           onChange={(e) => setForm({ ...form, password: e.target.value })} />
-        <button disabled={busy} type="submit"
+        <TurnstileWidget onToken={setCaptcha} resetKey={captchaReset} />
+        <button disabled={busy || (!!TURNSTILE_SITE_KEY && !captcha)} type="submit"
           className="w-full rounded-xl bg-primary px-4 py-2.5 text-[13px] font-semibold text-white disabled:opacity-60">
           {busy ? "Memproses…" : "Buat Admin"}
         </button>
