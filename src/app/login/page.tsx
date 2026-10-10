@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import LoginForm from "@/components/LoginForm";
+import JoinResellerPopup from "@/components/JoinResellerPopup";
 
 export default async function LoginPage({
   searchParams,
@@ -10,6 +11,7 @@ export default async function LoginPage({
   const params = await searchParams;
   return (
     <div className="flex min-h-dvh items-center justify-center bg-hero-glow bg-no-repeat px-5 py-10">
+      <JoinResellerPopup />
       <div className="w-full max-w-[380px]">
         <Link
           href="/"

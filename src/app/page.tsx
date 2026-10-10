@@ -5,6 +5,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import HowToBecomeReseller from "@/components/HowToBecomeReseller";
+import JoinResellerPopup from "@/components/JoinResellerPopup";
 import LandingNav from "@/components/LandingNav";
 
 const FEATURES = [
@@ -101,6 +102,7 @@ export default function LandingPage() {
       </section>
 
       <HowToBecomeReseller />
+      <JoinResellerPopup />
 
       <footer className="border-t border-border">
         <div className="mx-auto max-w-[1180px] px-5 py-8 text-center text-[11.5px] text-ink-faint sm:px-8">
