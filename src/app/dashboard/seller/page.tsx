@@ -1,13 +1,7 @@
-import PageHeader from "@/components/dashboard/PageHeader";
-import DemoNote from "@/components/dashboard/seller/DemoNote";
-import SellerHome from "@/components/dashboard/seller/SellerHome";
+import { redirect } from "next/navigation";
 
+// Menu "Jualan" (pendaftaran seller marketplace) diganti etalase produk.
+// Link lama diarahkan ke etalase supaya tidak 404.
 export default function SellerHomePage() {
-  return (
-    <div>
-      <PageHeader title="Toko Saya" eyebrow="Jualan" />
-      <DemoNote />
-      <SellerHome />
-    </div>
-  );
+  redirect("/dashboard/generate");
 }

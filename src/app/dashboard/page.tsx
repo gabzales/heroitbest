@@ -78,8 +78,8 @@ export default async function DashboardPage() {
           <div className="grid grid-cols-2 gap-3.5 sm:gap-4">
             <ServiceCard
               href="/dashboard/generate"
-              title="Generate Keys"
-              subtitle="Create new access"
+              title="Etalase"
+              subtitle="Pilih produk & beli key"
               icon={KeyRound}
               tone="primary"
             />

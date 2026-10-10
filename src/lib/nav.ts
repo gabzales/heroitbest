@@ -1,6 +1,5 @@
 import {
   LayoutGrid,
-  KeyRound,
   History,
   Wallet,
   Receipt,
@@ -12,8 +11,7 @@ import {
 
 export const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutGrid, exact: true },
-  { href: "/dashboard/generate", label: "Generate Keys", icon: KeyRound, exact: false },
-  { href: "/dashboard/seller", label: "Jualan", icon: Store, exact: false },
+  { href: "/dashboard/generate", label: "Etalase", icon: Store, exact: false },
   { href: "/dashboard/history/keys", label: "History Key", icon: History, exact: false },
   { href: "/dashboard/topup", label: "Top Up", icon: Wallet, exact: false },
   { href: "/dashboard/history/topup", label: "History Top Up", icon: Receipt, exact: false },
@@ -37,7 +35,7 @@ export const ADMIN_NAV_ITEM = {
 // same pattern as Sidebar below.
 export const MOBILE_TABS = [
   { href: "/dashboard", label: "Home", icon: LayoutGrid, exact: true },
-  { href: "/dashboard/seller", label: "Jualan", icon: Store, exact: false },
+  { href: "/dashboard/generate", label: "Etalase", icon: Store, exact: false },
   { href: "/dashboard/calendar", label: "Activity", icon: CalendarDays, exact: false },
   { href: "/dashboard/profile", label: "Profile", icon: UserRound, exact: false },
 ] as const;
