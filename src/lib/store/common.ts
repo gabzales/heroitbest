@@ -37,8 +37,9 @@ export type QrisResult =
 /**
  * Buat transaksi QRIS di GensPay MEMAKAI API key seller. Base URL tetap dari
  * konfigurasi platform (seller tidak boleh menentukan URL -- cegah SSRF).
- * GensPay menambah fee DI ATAS nominal: pembeli bayar `amount` (gross),
- * seller menerima nominal penuh (net).
+ * Siapa yang menanggung fee tergantung mode project GensPay seller:
+ * BUYER_PAY_FEE (fee ditambah ke pembeli) atau MERCHANT_PAY_FEE (fee dipotong
+ * dari seller). Yang ditampilkan ke pembeli selalu `data.amount` dari GensPay.
  */
 export async function createSellerQris(opts: {
   apiKey: string;

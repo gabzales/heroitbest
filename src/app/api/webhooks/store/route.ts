@@ -68,10 +68,16 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, ignored: status ?? "unknown_status" });
   }
 
-  // Nominal bersih yang diterima seller harus sama dengan harga pesanan.
-  const settled = typeof payload.data?.net_amount === "number" ? payload.data.net_amount : payload.data?.amount;
-  if (typeof settled === "number" && settled !== Number(order.sell_price)) {
-    console.error("store webhook amount mismatch", { orderId, expected: order.sell_price, settled });
+  // GensPay punya 2 mode fee per project (dokumentasi GensPay, bagian "Struktur Fee"):
+  //  - BUYER_PAY_FEE    : pembeli bayar harga + fee  -> net_amount == harga pesanan
+  //  - MERCHANT_PAY_FEE : pembeli bayar tepat harga  -> amount == harga pesanan (net_amount = harga - fee)
+  // Dua-duanya sah. Yang ditolak hanya kalau tidak ada satu pun yang cocok dengan harga pesanan.
+  const price = Number(order.sell_price);
+  const net = payload.data?.net_amount;
+  const gross = payload.data?.amount;
+  const known = typeof net === "number" || typeof gross === "number";
+  if (known && net !== price && gross !== price) {
+    console.error("store webhook amount mismatch", { orderId, expected: price, amount: gross, net });
     return NextResponse.json({ error: "amount_mismatch" }, { status: 400 });
   }
 

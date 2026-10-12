@@ -180,6 +180,16 @@ export default function StoreSettings({ data }: { data: MyStore }) {
         <p className="mt-1.5 text-[12px] leading-relaxed text-ink-faint">
           Ambil API key dari dashboard GensPay milikmu. Key disimpan terenkripsi, tidak pernah ditampilkan lagi, dan tidak bisa dilihat siapa pun (termasuk admin).
         </p>
+        <div className="mt-3 rounded-xl border border-border bg-surface-2 p-3 text-[12px] leading-relaxed">
+          <p className="font-bold">Wajib: isi Webhook URL di GensPay-mu</p>
+          <p className="mt-1 text-ink-faint">
+            Di GensPay buka <b>Settings → Project</b>, isi <b>Webhook URL</b> dengan alamat di bawah, lalu klik <b>Uji Coba Webhook</b>.
+            Tanpa ini, pembeli sudah bayar tapi key tidak terkirim otomatis.
+          </p>
+          <code className="mt-2 block break-all rounded-lg bg-surface px-2.5 py-2 font-mono text-[11.5px]">
+            {(typeof window !== "undefined" ? window.location.origin : "") + "/api/webhooks/store"}
+          </code>
+        </div>
         {s?.hasKey && (
           <p className="mt-2 text-[12px] font-semibold text-emerald-500">Tersimpan (berakhiran ••••{s.keyLast4}). Isi lagi untuk mengganti.</p>
         )}
@@ -233,7 +243,7 @@ export default function StoreSettings({ data }: { data: MyStore }) {
       <div className={cardCls}>
         <p className="text-[13.5px] font-bold">3. Harga jual</p>
         <p className="mt-1.5 text-[12px] leading-relaxed text-ink-faint">
-          Isi harga yang kamu mau. Tidak boleh di bawah modal. Kosongkan = tidak dijual. Untungmu = harga jual − modal (biaya QRIS GensPay ditambahkan ke pembeli).
+          Isi harga yang kamu mau. Tidak boleh di bawah modal. Kosongkan = tidak dijual. Untungmu = harga jual − modal (biaya QRIS GensPay mengikuti pengaturan project GensPay-mu: ditambah ke pembeli atau dipotong dari hasil jualanmu).
         </p>
         {!s ? (
           <p className="mt-3 text-[12px] text-ink-faint">Simpan info toko dulu.</p>

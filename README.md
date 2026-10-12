@@ -89,6 +89,8 @@ Reseller bisa jualan key tanpa membuat web sendiri:
 Setup (sekali):
 - Jalankan `supabase/store-link.sql` di SQL Editor (atau `supabase/setup.sql` penuh, sudah termasuk).
 - Env: `STORE_SECRET_KEY` (`openssl rand -hex 32`, **jangan diganti** setelah ada seller menyimpan key) dan `APP_URL` (domain situs). Tanpa `STORE_SECRET_KEY` fitur mati.
+- **Webhook GensPay (wajib):** dokumentasi GensPay tidak mendaftarkan `callback_url` per transaksi; notifikasi dikirim ke satu *Webhook URL per project*. Tiap seller harus mengisi Webhook URL project GensPay-nya dengan `https://domain-kamu/api/webhooks/store` (ditampilkan di halaman Toko Saya). Project GensPay untuk top-up saldo (`/api/webhooks/topup`) dan untuk heromarket (`/webhook/genspay`) harus **project yang berbeda**, karena satu project hanya punya satu Webhook URL.
+- Fee GensPay bisa ditanggung pembeli atau seller (mode project). Webhook toko menerima keduanya.
 - API key GensPay seller disimpan terenkripsi (AES-256-GCM), tidak pernah dikirim ke browser, tidak terbaca admin.
 - Admin bisa memblokir toko di **Admin → Toko Seller**.
 - Saldo seller harus cukup: produk yang modalnya melebihi saldo seller otomatis disembunyikan dari tokonya. Pesanan yang sudah dibayar tapi gagal terkirim (mis. stok habis) tercatat dan bisa dikirim ulang oleh pembeli/seller.
