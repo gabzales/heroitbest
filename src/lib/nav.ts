@@ -3,20 +3,19 @@ import {
   History,
   Wallet,
   Receipt,
-  CalendarDays,
   UserRound,
   ShieldCheck,
-  Store,
+  KeyRound,
 } from "lucide-react";
 
+// Menu ala vipbestmods: Dashboard, Beli Key, History, Profil (+ Top Up di sidebar desktop).
 export const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutGrid, exact: true },
-  { href: "/dashboard/generate", label: "Etalase", icon: Store, exact: false },
-  { href: "/dashboard/history/keys", label: "History Key", icon: History, exact: false },
+  { href: "/dashboard/generate", label: "Beli Key", icon: KeyRound, exact: false },
+  { href: "/dashboard/history/keys", label: "History", icon: History, exact: false },
   { href: "/dashboard/topup", label: "Top Up", icon: Wallet, exact: false },
   { href: "/dashboard/history/topup", label: "History Top Up", icon: Receipt, exact: false },
-  { href: "/dashboard/calendar", label: "Activity", icon: CalendarDays, exact: false },
-  { href: "/dashboard/profile", label: "Profile", icon: UserRound, exact: false },
+  { href: "/dashboard/profile", label: "Profil", icon: UserRound, exact: false },
 ] as const;
 
 // Only shown to role === 'admin' -- Sidebar appends this itself, see
@@ -29,13 +28,11 @@ export const ADMIN_NAV_ITEM = {
   exact: false,
 } as const;
 
-// Subset shown on the mobile bottom tab bar — matches the reference layout
-// (Robot/Bot placeholder → Dashboard, Calendar, Profile). Admin tab is
-// appended separately at render time (BottomNav) when role === 'admin',
-// same pattern as Sidebar below.
+// Tab bawah mobile: persis 4 menu seperti vipbestmods. Top Up diakses dari
+// Dashboard & Profil; Admin ditambah otomatis oleh BottomNav untuk role admin.
 export const MOBILE_TABS = [
-  { href: "/dashboard", label: "Home", icon: LayoutGrid, exact: true },
-  { href: "/dashboard/generate", label: "Etalase", icon: Store, exact: false },
-  { href: "/dashboard/calendar", label: "Activity", icon: CalendarDays, exact: false },
-  { href: "/dashboard/profile", label: "Profile", icon: UserRound, exact: false },
+  { href: "/dashboard", label: "Dashboard", icon: LayoutGrid, exact: true },
+  { href: "/dashboard/generate", label: "Beli Key", icon: KeyRound, exact: false },
+  { href: "/dashboard/history/keys", label: "History", icon: History, exact: false },
+  { href: "/dashboard/profile", label: "Profil", icon: UserRound, exact: false },
 ] as const;

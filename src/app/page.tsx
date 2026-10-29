@@ -37,7 +37,7 @@ const TONE_BG = {
 
 export default function LandingPage() {
   return (
-    <div className="min-h-dvh overflow-x-hidden">
+    <div className="hm-admin hm-vip min-h-dvh overflow-x-hidden">
       <LandingNav />
 
       <section className="relative bg-hero-glow bg-no-repeat">

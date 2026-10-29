@@ -10,7 +10,7 @@ export default async function LoginPage({
 }) {
   const params = await searchParams;
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-hero-glow bg-no-repeat px-5 py-10">
+    <div className="hm-admin hm-vip flex min-h-dvh items-center justify-center px-5 py-10">
       <JoinResellerPopup />
       <div className="w-full max-w-[380px]">
         <Link

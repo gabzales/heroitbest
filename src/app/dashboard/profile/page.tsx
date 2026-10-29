@@ -4,7 +4,7 @@ import { IdCard, Mail, ShieldCheck, Store, ArrowRight } from "lucide-react";
 import PageHeader from "@/components/dashboard/PageHeader";
 import Avatar from "@/components/Avatar";
 import LogoutButton from "@/components/LogoutButton";
-import ThemeSwitcher from "@/components/ThemeSwitcher";
+import { SELLER_ENABLED } from "@/lib/features";
 import ChangePasswordForm from "@/components/dashboard/ChangePasswordForm";
 import { getCurrentUser } from "@/lib/data/user";
 
@@ -61,6 +61,7 @@ export default async function ProfilePage() {
         </div>
       </div>
 
+      {SELLER_ENABLED && (
       <Link
         href="/dashboard/profile/store"
         className="mt-4 flex items-center gap-3 rounded-xl2 border border-border bg-surface px-5 py-4 transition-colors hover:bg-surface-2"
@@ -74,10 +75,9 @@ export default async function ProfilePage() {
         </div>
         <ArrowRight size={16} className="text-ink-faint" />
       </Link>
+      )}
 
       <ChangePasswordForm />
-
-      <ThemeSwitcher />
 
       <LogoutButton className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl2 border border-rose-dim bg-rose-dim px-5 py-4 text-[13.5px] font-bold text-rose transition-opacity hover:opacity-90" />
     </div>

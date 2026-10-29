@@ -1,10 +1,8 @@
 import Link from "next/link";
 import { LucideIcon, ArrowUpRight } from "lucide-react";
 
-// Each tone maps straight to the active theme's CSS var (see src/lib/theme.ts
-// + ThemeProvider), so switching theme recolors these cards -- not just the
-// page background. 4 distinct tones = 4 distinct card colors, same idea as
-// the reference layout (purple / red / green / peach cards).
+// Kartu layanan gaya vipbestmods: kartu gelap polos, hanya ikonnya yang diwarnai
+// (tone -> CSS var tema aktif).
 const TONE_VARS = {
   primary: "var(--primary)",
   rose: "var(--rose)",
@@ -25,34 +23,24 @@ export default function ServiceCard({
   icon: LucideIcon;
   tone: keyof typeof TONE_VARS;
 }) {
+  const c = TONE_VARS[tone];
   return (
     <Link
       href={href}
-      style={{ backgroundColor: TONE_VARS[tone] }}
-      className="group relative flex min-h-[130px] flex-col justify-between overflow-hidden rounded-xl2 p-5 text-white shadow-card transition-transform hover:-translate-y-0.5"
+      className="group relative flex min-h-[116px] flex-col justify-between overflow-hidden rounded-xl2 border border-border bg-surface p-4 transition-all hover:-translate-y-0.5 hover:border-primary/40"
     >
-      {/* subtle diagonal depth on top of the flat theme color, not a second color */}
-      <span aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/0 via-white/0 to-black/20" />
-      <span
-        aria-hidden
-        className="pointer-events-none absolute -right-5 -top-5 h-16 w-16 rounded-full bg-white/15 transition-transform group-hover:scale-110"
-      />
-      <span
-        aria-hidden
-        className="pointer-events-none absolute -bottom-8 -right-8 h-28 w-28 rounded-full bg-white/10"
-      />
-      <div className="relative flex items-start justify-between">
-        <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20">
+      <div className="flex items-start justify-between">
+        <span
+          className="flex h-10 w-10 items-center justify-center rounded-xl"
+          style={{ color: c, backgroundColor: `color-mix(in srgb, ${c} 16%, transparent)` }}
+        >
           <Icon size={19} strokeWidth={2.1} />
         </span>
-        <ArrowUpRight
-          size={16}
-          className="opacity-0 transition-opacity group-hover:opacity-90"
-        />
+        <ArrowUpRight size={16} className="text-ink-faint opacity-0 transition-opacity group-hover:opacity-90" />
       </div>
-      <div className="relative">
-        <p className="font-display text-[15px] font-bold leading-tight">{title}</p>
-        <p className="mt-0.5 text-[11.5px] text-white/80">{subtitle}</p>
+      <div>
+        <p className="text-[12.5px] font-extrabold uppercase leading-tight tracking-wide">{title}</p>
+        <p className="mt-0.5 text-[11px] text-ink-faint">{subtitle}</p>
       </div>
     </Link>
   );

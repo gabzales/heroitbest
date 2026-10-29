@@ -78,14 +78,14 @@ export default async function DashboardPage() {
           <div className="grid grid-cols-2 gap-3.5 sm:gap-4">
             <ServiceCard
               href="/dashboard/generate"
-              title="Etalase"
+              title="Beli Key"
               subtitle="Pilih produk & beli key"
               icon={KeyRound}
               tone="primary"
             />
             <ServiceCard
               href="/dashboard/history/keys"
-              title="History Key"
+              title="History"
               subtitle="View past keys"
               icon={History}
               tone="rose"
@@ -112,10 +112,10 @@ export default async function DashboardPage() {
             <div className="flex items-center justify-between">
               <h2 className="font-display text-[14px] font-bold">Recent Activity</h2>
               <Link
-                href="/dashboard/calendar"
+                href="/dashboard/history/keys"
                 className="flex items-center text-[12px] font-medium text-primary"
               >
-                Calendar <ChevronRight size={14} />
+                Lihat semua <ChevronRight size={14} />
               </Link>
             </div>
             {recent.length === 0 ? (
